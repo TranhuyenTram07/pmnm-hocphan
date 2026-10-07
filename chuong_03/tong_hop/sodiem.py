@@ -60,9 +60,7 @@ STUDENTS = {
 }
 
 
-# =========================
-# PHẦN 0 - HÀM PHỤ
-# =========================
+
 
 def average(scores):
     if not scores:
@@ -121,9 +119,6 @@ def layout(title, body):
 </html>"""
 
 
-# =========================
-# CÂU 1 - TRANG CHỦ
-# =========================
 
 @app.route("/")
 def home():
@@ -148,9 +143,6 @@ def home():
     return layout("Trang chủ", body)
 
 
-# =========================
-# CÂU 2 - DANH SÁCH
-# =========================
 
 @app.route("/students")
 def student_list():
@@ -229,9 +221,6 @@ def student_list():
     return layout("Sinh viên", body)
 
 
-# =========================
-# CÂU 3 - CHI TIẾT
-# =========================
 
 @app.route("/students/<mssv>")
 def student_detail(mssv):
@@ -327,9 +316,6 @@ def student_detail(mssv):
     return layout("Chi tiết sinh viên", body)
 
 
-# =========================
-# CÂU 4 - LINK RÚT GỌN
-# =========================
 
 @app.route("/sv/<mssv>")
 def short_student(mssv):
@@ -339,9 +325,7 @@ def short_student(mssv):
     )
 
 
-# =========================
-# CÂU 5 - CSV
-# =========================
+
 
 @app.route("/students/<mssv>/export")
 def export_score(mssv):
@@ -372,9 +356,7 @@ def export_score(mssv):
     return response
 
 
-# =========================
-# CÂU 6 - TÌM KIẾM
-# =========================
+
 
 @app.route("/search")
 def search():
@@ -437,12 +419,6 @@ def search():
             body += "<p>Không có sinh viên phù hợp.</p>"
 
     return layout("Tìm kiếm", body)
-
-
-# =========================
-# CÂU 7 - API ĐỌC
-# =========================
-
 @app.route("/api/students")
 def api_students():
     lop = request.args.get("lop")
@@ -495,9 +471,6 @@ def api_student_detail(mssv):
     return jsonify(student_summary(mssv))
 
 
-# =========================
-# CÂU 8 - API QUẢN LÝ ĐIỂM
-# =========================
 
 @app.route(
     "/api/students/<mssv>/scores/<course>",
@@ -599,55 +572,5 @@ def api_score(mssv, course):
         del scores[course]
 
         return make_response("", 204)
-
-
-# =========================
-# CÂU 9 - XỬ LÝ LỖI
-# =========================
-
-@app.errorhandler(400)
-@app.errorhandler(404)
-@app.errorhandler(405)
-def handle_error(error):
-    if error.code == 400:
-        title = "Dữ liệu không hợp lệ"
-    elif error.code == 404:
-        title = "Không tìm thấy"
-    else:
-        title = "Phương thức không được hỗ trợ"
-
-    description = error.description or title
-
-    if request.path.startswith("/api/"):
-        return jsonify({
-            "error": title,
-            "detail": description
-        }), error.code
-
-    body = f"""
-    <h1>{escape(str(error.code))} - {escape(title)}</h1>
-
-    <p>{escape(str(description))}</p>
-
-    <p>
-        <a href="{url_for('home')}">Về trang chủ</a>
-    </p>
-
-    <p>
-        <a href="{url_for('student_list')}">
-            Danh sách sinh viên
-        </a>
-    </p>
-
-    <p>
-        <a href="{url_for('search')}">
-            Tìm kiếm
-        </a>
-    </p>
-    """
-
-    return layout(title, body), error.code
-
-
 if __name__ == "__main__":
     app.run(debug=True, port=8000)
