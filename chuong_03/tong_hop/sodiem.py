@@ -572,5 +572,49 @@ def api_score(mssv, course):
         del scores[course]
 
         return make_response("", 204)
+@app.errorhandler(400)
+@app.errorhandler(404)
+@app.errorhandler(405)
+def handle_error(error):
+    if error.code == 400:
+        title = "Dữ liệu không hợp lệ"
+    elif error.code == 404:
+        title = "Không tìm thấy"
+    else:
+        title = "Phương thức không được hỗ trợ"
+
+    description = error.description or title
+
+    if request.path.startswith("/api/"):
+        return jsonify({
+            "error": title,
+            "detail": description
+        }), error.code
+
+    body = f"""
+    <h1>{escape(str(error.code))} - {escape(title)}</h1>
+
+    <p>{escape(str(description))}</p>
+
+    <p>
+        <a href="{url_for('home')}">Về trang chủ</a>
+    </p>
+
+    <p>
+        <a href="{url_for('student_list')}">
+            Danh sách sinh viên
+        </a>
+    </p>
+
+    <p>
+        <a href="{url_for('search')}">
+            Tìm kiếm
+        </a>
+    </p>
+    """
+
+    return layout(title, body), error.code
+
+
 if __name__ == "__main__":
     app.run(debug=True, port=8000)
