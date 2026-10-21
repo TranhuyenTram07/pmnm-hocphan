@@ -1,0 +1,28 @@
+```html
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Tính tổng</title>
+</head>
+<body>
+    <h1>TÍNH TỔNG HAI SỐ</h1>
+
+    <form method="POST">
+        <label>Số thứ nhất:</label>
+        <input type="number" step="any" name="a" required>
+        <br><br>
+
+        <label>Số thứ hai:</label>
+        <input type="number" step="any" name="b" required>
+        <br><br>
+
+        <button type="submit">Tính tổng</button>
+    </form>
+
+    {% if tong is not none %}
+        <h2>Kết quả: {{ tong }}</h2>
+    {% endif %}
+</body>
+</html>
+```
