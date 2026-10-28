@@ -1,0 +1,106 @@
+
+{% extends "base.html" %}
+
+{% block title %}Tính chỉ số BMI{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body p-4 p-md-5">
+
+        <h2 class="text-center text-primary fw-bold mb-2">
+            Tính chỉ số BMI
+        </h2>
+
+        <p class="text-center text-secondary mb-4">
+            Nhập chiều cao và cân nặng của bạn.
+        </p>
+
+        <!-- Form gửi dữ liệu bằng POST -->
+        <form method="POST" action="{{ url_for('bmi') }}">
+
+            <!-- Ô chiều cao -->
+            <div class="mb-3">
+                <label for="chieu_cao" class="form-label fw-semibold">
+                    Chiều cao (cm)
+                </label>
+
+                <input
+                    type="text"
+                    id="chieu_cao"
+                    name="chieu_cao"
+                    class="form-control {% if error_chieu_cao %}is-invalid{% endif %}"
+                    value="{{ chieu_cao }}"
+                    placeholder="Ví dụ: 170"
+                >
+
+                {% if error_chieu_cao %}
+                    <div class="invalid-feedback">
+                        {{ error_chieu_cao }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Ô cân nặng -->
+            <div class="mb-4">
+                <label for="can_nang" class="form-label fw-semibold">
+                    Cân nặng (kg)
+                </label>
+
+                <input
+                    type="text"
+                    id="can_nang"
+                    name="can_nang"
+                    class="form-control {% if error_can_nang %}is-invalid{% endif %}"
+                    value="{{ can_nang }}"
+                    placeholder="Ví dụ: 65,5"
+                >
+
+                {% if error_can_nang %}
+                    <div class="invalid-feedback">
+                        {{ error_can_nang }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">
+                Tính BMI
+            </button>
+
+            <a href="{{ url_for('bmi') }}"
+               class="btn btn-outline-secondary w-100 mt-2">
+                Làm mới
+            </a>
+        </form>
+
+        <!-- Hiển thị kết quả khi dữ liệu hợp lệ -->
+        {% if chi_so_bmi is not none %}
+            <div class="alert alert-{{ mau_ket_qua }} mt-4 mb-0">
+                <h5 class="fw-bold">Kết quả BMI</h5>
+
+                <p class="mb-2">
+                    Chỉ số BMI:
+                    <strong>{{ "%.1f"|format(chi_so_bmi) }}</strong>
+                </p>
+
+                <p class="mb-2">
+                    Phân loại:
+                    <strong>{{ phan_loai }}</strong>
+                </p>
+
+                <hr>
+
+                <p class="mb-1">
+                    Cân nặng nên có:
+                    <strong>{{ "%.1f"|format(can_nang_min) }}
+                    – {{ "%.1f"|format(can_nang_max) }} kg</strong>
+                </p>
+
+                <small>
+                    Khoảng cân nặng ứng với BMI từ 18,5 đến 22,9.
+                </small>
+            </div>
+        {% endif %}
+
+    </div>
+</div>
+{% endblock %}
